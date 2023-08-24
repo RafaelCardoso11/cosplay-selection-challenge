@@ -75,7 +75,7 @@ const categories = [
 export default function Home() {
   const [step, setStep] = useState<number>(0);
 
-  const handleNextPage = () => {
+  const handleNextPage = (values: { judge: string }) => {
     setStep((stepCurrent) => stepCurrent + 1);
   };
   const items: MenuItem[] = [
@@ -123,6 +123,15 @@ export default function Home() {
           {items[step].data.content}
         </div>
       </main>
+      <footer className="h-20 flex items-center justify-center  text-center">
+        <span>
+          Em desenvolvimento por{" "}
+          <a href="https://www.linkedin.com/in/rafaelcardoso11/">
+            @RafaelCardoso11 (Linkedin)
+          </a>{" "}
+          💙
+        </span>
+      </footer>
     </div>
   );
 }
