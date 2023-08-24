@@ -90,7 +90,7 @@ export default function Home() {
       label: "Candidato",
       data: {
         title: "Ficha do Candidato",
-        content: categories.length && <Candidate categories={categories} />,
+        content: <Candidate categories={categories} />,
       },
     },
     {
