@@ -1,3 +1,4 @@
+"use client";
 import { Input } from "@/components/Input";
 import { Button } from "primereact/button";
 

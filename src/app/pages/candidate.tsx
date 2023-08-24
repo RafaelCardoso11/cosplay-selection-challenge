@@ -1,3 +1,4 @@
+"use client";
 import { Input } from "@/components/Input";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { generateArrayFromIndex } from "../helpers/generateArrayFromIndex";
