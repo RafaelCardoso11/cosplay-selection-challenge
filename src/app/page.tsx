@@ -5,6 +5,7 @@ import { Steps } from "primereact/steps";
 import { MenuItem } from "primereact/menuitem";
 import { Candidate } from "./pages/candidate";
 import { Judge } from "./pages/judge";
+import { Ranking } from "./pages/ranking";
 
 const categories = [
   {
@@ -95,7 +96,7 @@ export default function Home() {
     },
     {
       label: "Ranking",
-      data: { title: "Ranking dos Candidatos", content: <></> },
+      data: { title: "Ranking dos Candidatos", content: <Ranking /> },
     },
   ];
 
