@@ -35,7 +35,6 @@ export default function Home() {
 
   const handleNextPage = (values: JudgeFormSchema) => {
     setStep((stepCurrent) => stepCurrent + 1);
-    console.log(values);
     handleReaderConfigs(values.configsFile as File);
   };
   const items: MenuItem[] = [

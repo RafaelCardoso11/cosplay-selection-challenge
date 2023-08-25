@@ -22,7 +22,6 @@ export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
       validate={(values: any) => {
         const errors: any = {};
 
-        console.log(values.configsFile)
         if (
           !values.configsFile.name ||
           !values.configsFile.type ||
