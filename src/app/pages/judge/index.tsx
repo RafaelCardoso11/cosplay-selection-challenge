@@ -17,6 +17,22 @@ export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
       initialValues={initialValues}
       onSubmit={handleNextPage}
       validationSchema={toFormikValidationSchema(judgeFormSchema)}
+      validateOnBlur={false}
+      validateOnChange={false}
+      validate={(values: any) => {
+        const errors: any = {};
+
+        console.log(values.configsFile)
+        if (
+          !values.configsFile.name ||
+          !values.configsFile.type ||
+          !values.configsFile.size
+        ) {
+          errors.configsFile = "Configurações são obrigatórias.";
+        }
+
+        return errors;
+      }}
     >
       {(props) => (
         <div>

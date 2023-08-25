@@ -1,4 +1,5 @@
 "use client";
+import { initialValues } from "@/app/pages/judge/validations";
 import { FormikProps } from "formik";
 import { InputText, InputTextProps } from "primereact/inputtext";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -21,8 +22,11 @@ export const File: React.FC<FileProps> = ({
 }) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files) {
+
+    if (files && files[0]) {
       propsFormik?.setFieldValue(id, files[0]);
+    } else {
+      propsFormik?.setFieldValue(id, propsFormik.initialValues[id]);
     }
   };
 

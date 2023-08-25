@@ -1,13 +1,18 @@
-import { TypeOf, number, object, string } from "zod";
+import { TypeOf, custom, number, object, string, union } from "zod";
+
+
 export const judgeFormSchema = object({
   judge: string({
     required_error: "O nome do Jurado é obrigatório!",
   }),
-  configsFile: object({
-    name: string(),
-    type: string(),
-    size: number(),
-  })
+  configsFile: union([
+    object({
+      name: string(),
+      type: string(),
+      size: number(),
+    }),
+    string(),
+  ])
 });
 
 export const initialValues = {
