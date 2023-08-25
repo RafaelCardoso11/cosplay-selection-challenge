@@ -10,7 +10,7 @@ interface JudgeProps {
 import z, { TypeOf, object, string } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
-const contactFormSchema = object({
+const judgeFormSchema = object({
   judge: string({
     required_error: "O nome do Jurado é obrigatório!",
   }),
@@ -19,10 +19,10 @@ const contactFormSchema = object({
   }),
 });
 
-type ContactFormInputs = TypeOf<typeof contactFormSchema>;
+type JudgeFormInputs = TypeOf<typeof judgeFormSchema>;
 export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
   return (
-    <Formik<ContactFormInputs>
+    <Formik<JudgeFormInputs>
       initialValues={{
         judge: "",
         configs: "",
@@ -30,7 +30,7 @@ export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
       onSubmit={(values) => {
         handleNextPage(values);
       }}
-      validationSchema={toFormikValidationSchema(contactFormSchema)}
+      validationSchema={toFormikValidationSchema(judgeFormSchema)}
     >
       {(props) => (
         <div>
