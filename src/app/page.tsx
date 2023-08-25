@@ -85,7 +85,10 @@ export default function Home() {
       <footer className="h-20 flex items-center justify-center  text-center">
         <span>
           Em desenvolvimento por{" "}
-          <a href="https://www.linkedin.com/in/rafaelcardoso11/">
+          <a
+            href="https://www.linkedin.com/in/rafaelcardoso11/"
+            target="_blank"
+          >
             @RafaelCardoso11 (Linkedin)
           </a>{" "}
           💙
