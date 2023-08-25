@@ -3,22 +3,40 @@
 import React, { useState } from "react";
 import { Steps } from "primereact/steps";
 import { MenuItem } from "primereact/menuitem";
-import { Candidate } from "./pages/candidate/candidate";
-import { Judge } from "./pages/judge/judge";
+import { Candidate } from "./pages/candidate";
+import { Judge } from "./pages/judge";
 import { Ranking } from "./pages/ranking";
 import { Category } from "./interfaces/Category";
+import { JudgeFormSchema } from "./pages/judge/validations";
 
 interface Configs {
   categories: Category[];
 }
 
-interface 
 export default function Home() {
   const [step, setStep] = useState<number>(0);
   const [configs, setConfigs] = useState<Configs>();
 
-  const handleNextPage = (values: { judge: string,  }) => {
+  const handleReaderConfigs = (configs: File) => {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      try {
+        const jsonData = JSON.parse(content);
+        setConfigs(jsonData);
+      } catch (error) {
+        console.error("Erro ao analisar o arquivo JSON:", error);
+      }
+    };
+
+    reader.readAsText(configs);
+  };
+
+  const handleNextPage = (values: JudgeFormSchema) => {
     setStep((stepCurrent) => stepCurrent + 1);
+    console.log(values);
+    handleReaderConfigs(values.configsFile as File);
   };
   const items: MenuItem[] = [
     {
@@ -54,7 +72,6 @@ export default function Home() {
             model={items}
             activeIndex={step}
             onSelect={(e) => setStep(e.index)}
-            readOnly={false}
           />
           <div className="my-10">
             <h2 className="text-2xl font-semibold mb-4">
