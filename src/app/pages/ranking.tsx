@@ -15,7 +15,7 @@ export const Ranking: React.FC<RankingProps> = () => {
             key: "0",
 
             data: {
-              ranking: "1",
+              ranking: "#1",
               name: "André Rafael Cardoso Reis",
               character: "Batman",
               score: "93",
@@ -41,10 +41,36 @@ export const Ranking: React.FC<RankingProps> = () => {
             key: "1",
 
             data: {
-              ranking: "2",
+              ranking: "#2",
               name: "Rebeca Tavares",
               character: "Barbie",
               score: "23",
+            },
+            children: [
+              {
+                key: "0-0",
+                label: "Work",
+                data: "Work Folder",
+                icon: "pi pi-fw pi-cog",
+                children: [
+                  {
+                    key: "0-0-1",
+                    label: "Resume.doc",
+                    icon: "pi pi-fw pi-file",
+                    data: "Resume Document",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            key: "1",
+
+            data: {
+              ranking: "#3",
+              name: "Amanda Reis",
+              character: "Harley",
+              score: "10",
             },
             children: [
               {
