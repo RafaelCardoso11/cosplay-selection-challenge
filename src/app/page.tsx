@@ -6,78 +6,37 @@ import { MenuItem } from "primereact/menuitem";
 import { Candidate } from "./pages/candidate";
 import { Judge } from "./pages/judge";
 import { Ranking } from "./pages/ranking";
+import { Category } from "./interfaces/Category";
+import { JudgeFormSchema } from "./pages/judge/validations";
 
-const categories = [
-  {
-    category: "Mobilidade/Desenvoltura",
-    hasObservation: true,
-    description: "Avaliação da mobilidade e desenvoltura do personagem.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-  {
-    category: "Fidelidade",
-    hasObservation: true,
-    description:
-      "Avaliação da fidelidade em relação à referência original ou ao conceito proposto.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-  {
-    category: "Acabamento",
-    hasObservation: true,
-    description: "Avaliação dos detalhes e acabamento geral da caracterização.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-  {
-    category: "Acessórios (armas/ bolsas/ peruca/ maquiagem)",
-    hasObservation: true,
-    description:
-      "Avaliação dos acessórios, como armas, bolsas, perucas e maquiagem.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-  {
-    category: "Criatividade / Interpretação",
-    hasObservation: true,
-    description:
-      "Avaliação da criatividade e interpretação única do personagem.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-  {
-    category: "Imagem referência",
-    hasObservation: false,
-    description: "Imagens usadas como referência, sem observações associadas.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-];
+interface Configs {
+  categories: Category[];
+}
 
 export default function Home() {
   const [step, setStep] = useState<number>(0);
+  const [configs, setConfigs] = useState<Configs>();
 
-  const handleNextPage = (values: { judge: string }) => {
+  const handleReaderConfigs = (configs: File) => {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      try {
+        const jsonData = JSON.parse(content);
+        setConfigs(jsonData);
+      } catch (error) {
+        console.error("Erro ao analisar o arquivo JSON:", error);
+      }
+    };
+
+    reader.readAsText(configs);
+  };
+
+  const handleNextPage = (values: JudgeFormSchema) => {
     setStep((stepCurrent) => stepCurrent + 1);
+    console.log(values);
+    handleReaderConfigs(values.configsFile as File);
   };
   const items: MenuItem[] = [
     {
@@ -91,7 +50,7 @@ export default function Home() {
       label: "Candidato",
       data: {
         title: "Ficha do Candidato",
-        content: <Candidate categories={categories} />,
+        content: configs && <Candidate categories={configs.categories} />,
       },
     },
     {
@@ -113,7 +72,6 @@ export default function Home() {
             model={items}
             activeIndex={step}
             onSelect={(e) => setStep(e.index)}
-            readOnly={false}
           />
           <div className="my-10">
             <h2 className="text-2xl font-semibold mb-4">

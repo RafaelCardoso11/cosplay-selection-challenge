@@ -1,36 +1,22 @@
 "use client";
 import { Input } from "@/components/Input";
 import { Button } from "primereact/button";
-import { Formik, Form, Field } from "formik";
+import { Formik } from "formik";
+
+import { toFormikValidationSchema } from "zod-formik-adapter";
+import { JudgeFormSchema, judgeFormSchema, initialValues } from "./validations";
+import { File } from "@/components/file";
 
 interface JudgeProps {
-  handleNextPage: (values: { judge: string }) => void;
+  handleNextPage: (values: JudgeFormSchema) => void;
 }
 
-import z, { TypeOf, object, string } from "zod";
-import { toFormikValidationSchema } from "zod-formik-adapter";
-
-const contactFormSchema = object({
-  judge: string({
-    required_error: "O nome do Jurado é obrigatório!",
-  }),
-  configs: string({
-    required_error: "Configurações são obrigatórias",
-  }),
-});
-
-type ContactFormInputs = TypeOf<typeof contactFormSchema>;
 export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
   return (
-    <Formik<ContactFormInputs>
-      initialValues={{
-        judge: "",
-        configs: "",
-      }}
-      onSubmit={(values) => {
-        handleNextPage(values);
-      }}
-      validationSchema={toFormikValidationSchema(contactFormSchema)}
+    <Formik<JudgeFormSchema>
+      initialValues={initialValues}
+      onSubmit={handleNextPage}
+      validationSchema={toFormikValidationSchema(judgeFormSchema)}
     >
       {(props) => (
         <div>
@@ -57,10 +43,10 @@ export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
             <Input id="judge" label="Nome do Jurado" propsFormik={props} />
           </div>
           <div>
-            <Input
-              id="configs"
+            <File
+              id="configsFile"
               label="Configurações"
-              inputTextProps={{ type: "file", accept: ".json" }}
+              accept=".json"
               propsFormik={props}
             />
           </div>
