@@ -1,12 +1,12 @@
 "use client";
 import { Input } from "@/components/Input";
 import { Accordion, AccordionTab } from "primereact/accordion";
-import { generateArrayFromIndex } from "../helpers/generateArrayFromIndex";
-import { Category } from "../interfaces/Category";
+import { generateArrayFromIndex } from "../../helpers/generateArrayFromIndex";
+import { Category } from "../../interfaces/Category";
 
 import { Separator } from "@/components/separator";
 import { Button } from "primereact/button";
-import { FinalRatings } from "../../components/finalRatings";
+import { FinalRatings } from "../../../components/finalRatings";
 
 interface CandidateProps {
   categories: Category[];
@@ -52,7 +52,7 @@ export const Candidate: React.FC<CandidateProps> = ({ categories }) => {
                 <h2 className="text-1xl w-full  mb-4">{description}</h2>
                 <div className="space-y-5">
                   <Input
-                    id={category.trim() + "_nota"}
+                    id={category}
                     inputTextProps={{
                       keyfilter: "pnum",
                     }}
@@ -60,7 +60,7 @@ export const Candidate: React.FC<CandidateProps> = ({ categories }) => {
                   />
                   {hasObservation && (
                     <Input
-                      id={category.trim() + "_obs"}
+                      id={category}
                       label={observationFieldName}
                     />
                   )}

@@ -3,80 +3,21 @@
 import React, { useState } from "react";
 import { Steps } from "primereact/steps";
 import { MenuItem } from "primereact/menuitem";
-import { Candidate } from "./pages/candidate";
-import { Judge } from "./pages/judge";
+import { Candidate } from "./pages/candidate/candidate";
+import { Judge } from "./pages/judge/judge";
 import { Ranking } from "./pages/ranking";
+import { Category } from "./interfaces/Category";
 
-const categories = [
-  {
-    category: "Mobilidade/Desenvoltura",
-    hasObservation: true,
-    description: "Avaliação da mobilidade e desenvoltura do personagem.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-  {
-    category: "Fidelidade",
-    hasObservation: true,
-    description:
-      "Avaliação da fidelidade em relação à referência original ou ao conceito proposto.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-  {
-    category: "Acabamento",
-    hasObservation: true,
-    description: "Avaliação dos detalhes e acabamento geral da caracterização.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-  {
-    category: "Acessórios (armas/ bolsas/ peruca/ maquiagem)",
-    hasObservation: true,
-    description:
-      "Avaliação dos acessórios, como armas, bolsas, perucas e maquiagem.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-  {
-    category: "Criatividade / Interpretação",
-    hasObservation: true,
-    description:
-      "Avaliação da criatividade e interpretação única do personagem.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-  {
-    category: "Imagem referência",
-    hasObservation: false,
-    description: "Imagens usadas como referência, sem observações associadas.",
-    required: true,
-    maxScore: 10,
-    allowDecimal: true,
-    scoreFieldName: "Nota",
-    observationFieldName: "Observação",
-  },
-];
+interface Configs {
+  categories: Category[];
+}
 
+interface 
 export default function Home() {
   const [step, setStep] = useState<number>(0);
+  const [configs, setConfigs] = useState<Configs>();
 
-  const handleNextPage = (values: { judge: string }) => {
+  const handleNextPage = (values: { judge: string,  }) => {
     setStep((stepCurrent) => stepCurrent + 1);
   };
   const items: MenuItem[] = [
@@ -91,7 +32,7 @@ export default function Home() {
       label: "Candidato",
       data: {
         title: "Ficha do Candidato",
-        content: <Candidate categories={categories} />,
+        content: configs && <Candidate categories={configs.categories} />,
       },
     },
     {

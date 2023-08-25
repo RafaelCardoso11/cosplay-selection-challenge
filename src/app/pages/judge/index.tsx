@@ -3,9 +3,6 @@ import { Input } from "@/components/Input";
 import { Button } from "primereact/button";
 import { Formik, Form, Field } from "formik";
 
-interface JudgeProps {
-  handleNextPage: (values: { judge: string }) => void;
-}
 
 import z, { TypeOf, object, string } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
@@ -20,6 +17,9 @@ const judgeFormSchema = object({
 });
 
 type JudgeFormInputs = TypeOf<typeof judgeFormSchema>;
+interface JudgeProps {
+  handleNextPage: (values: JudgeFormInputs) => void;
+}
 export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
   return (
     <Formik<JudgeFormInputs>
