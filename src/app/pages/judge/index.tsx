@@ -1,17 +1,42 @@
 "use client";
 import { Input } from "@/components/Input";
 import { Button } from "primereact/button";
-import { Formik } from "formik";
+import { Formik, FormikProps } from "formik";
 
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { JudgeFormSchema, judgeFormSchema, initialValues } from "./validations";
 import { File } from "@/components/file";
+import { RadioButton } from "primereact/radiobutton";
+import { useEffect, useState } from "react";
+import { Checkbox } from "primereact/checkbox";
 
 interface JudgeProps {
   handleNextPage: (values: JudgeFormSchema) => void;
 }
 
 export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
+  const [isConfigDefault, setIsConfigDefault] = useState<boolean>(false);
+
+  const handleDefaultConfigsFile = (
+    checked: boolean,
+    propsFormik: FormikProps<JudgeFormSchema>
+  ) => {
+    setIsConfigDefault(checked);
+    propsFormik.setFieldValue("configsFile", {
+      type: "",
+      name: "",
+    });
+  };
+
+  const handleValidation = (values: any) => {
+    const errors: any = {};
+
+    if (!values.configsFile.name) {
+      errors.configsFile = "Configurações são obrigatórias.";
+    }
+
+    return errors;
+  };
   return (
     <Formik<JudgeFormSchema>
       initialValues={initialValues}
@@ -19,19 +44,7 @@ export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
       validationSchema={toFormikValidationSchema(judgeFormSchema)}
       validateOnBlur={false}
       validateOnChange={false}
-      validate={(values: any) => {
-        const errors: any = {};
-
-        if (
-          !values.configsFile.name ||
-          !values.configsFile.type ||
-          !values.configsFile.size
-        ) {
-          errors.configsFile = "Configurações são obrigatórias.";
-        }
-
-        return errors;
-      }}
+      validate={handleValidation}
     >
       {(props) => (
         <div>
@@ -58,10 +71,23 @@ export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
             <Input id="judge" label="Nome do Jurado" propsFormik={props} />
           </div>
           <div>
+            <div className="flex justify-end align-middle">
+              <label htmlFor="default" className="text-xs pr-2">
+                Configurações Padrões
+              </label>
+              <Checkbox
+                name="default"
+                checked={isConfigDefault}
+                onChange={(e) => {
+                  handleDefaultConfigsFile(e.checked as boolean, props);
+                }}
+              />
+            </div>
             <File
               id="configsFile"
               label="Configurações"
               accept=".json"
+              inputTextProps={{ disabled: isConfigDefault }}
               propsFormik={props}
             />
           </div>
