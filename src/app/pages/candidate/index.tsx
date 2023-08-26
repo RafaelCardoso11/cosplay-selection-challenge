@@ -25,16 +25,17 @@ export const Candidate: React.FC<CandidateProps> = ({ categories }) => {
     validateOnChange: false,
     validationSchema: toFormikValidationSchema(candidateFormSchema),
     onSubmit: (values: any) => {
-      setRatings([])
-      categories.forEach(({ scoreFieldName }, index) => {
-        setRatings((prev) => [
-          ...prev,
-          { score: values[scoreFieldName.toLowerCase() + index] as number },
-        ]);
+      setRatings([]);
+      categories.forEach(({ scoreFieldName, keyfilter }, index) => {
+        if (keyfilter === "pnum") {
+          setRatings((prev) => [
+            ...prev,
+            { score: Number(values[scoreFieldName.toLowerCase() + index]) },
+          ]);
+        }
       });
     },
     validate: (values: any) => {
-
       let errors: any = {};
       categories.forEach(
         ({ category, scoreFieldName, required, maxScore }, index) => {
@@ -43,7 +44,10 @@ export const Candidate: React.FC<CandidateProps> = ({ categories }) => {
               scoreFieldName.toLowerCase() + index
             ] = `A avaliação da categoria "${category}" é obrigatória`;
           }
-          if (values[scoreFieldName.toLowerCase() + index] > maxScore) {
+          if (
+            maxScore &&
+            values[scoreFieldName.toLowerCase() + index] > maxScore
+          ) {
             errors[
               scoreFieldName.toLowerCase() + index
             ] = `A avaliação deve ser somente até ${maxScore}`;
@@ -90,6 +94,7 @@ export const Candidate: React.FC<CandidateProps> = ({ categories }) => {
                 observationFieldName,
                 scoreFieldName,
                 maxScore,
+                keyfilter,
               },
               index
             ) => (
@@ -107,9 +112,8 @@ export const Candidate: React.FC<CandidateProps> = ({ categories }) => {
                     <Input
                       id={scoreFieldName.toLowerCase() + index}
                       inputTextProps={{
-                        keyfilter: "pnum",
-                        type: "number",
-                        tooltip: maxScore.toString(),
+                        keyfilter,
+                        tooltip: maxScore?.toString(),
                       }}
                       propsFormik={formik}
                       label={scoreFieldName}
