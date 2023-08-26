@@ -5,7 +5,6 @@ import { useState } from "react";
 
 interface IRating {
   score: number;
-  observation?: string;
 }
 
 interface FinalRatingProps {
@@ -28,6 +27,7 @@ export const FinalRatings: React.FC<FinalRatingProps> = ({ ratings }) => {
       <div className="flex justify-end">
         <Button
           className="justify-center my-3 text-sm bg-blue-700"
+          type="submit"
           onClick={handleCalculateNotas}
         >
           Calcular Nota Final
