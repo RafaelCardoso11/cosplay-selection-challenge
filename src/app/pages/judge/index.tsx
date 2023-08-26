@@ -5,10 +5,10 @@ import { Formik, FormikProps } from "formik";
 
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { JudgeFormSchema, judgeFormSchema, initialValues } from "./validations";
-import { File } from "@/components/file";
-import { RadioButton } from "primereact/radiobutton";
-import { useEffect, useState } from "react";
+import { File as FileInput } from "@/components/file";
+import { useState } from "react";
 import { Checkbox } from "primereact/checkbox";
+import axios from "axios";
 
 interface JudgeProps {
   handleNextPage: (values: JudgeFormSchema) => void;
@@ -17,15 +17,21 @@ interface JudgeProps {
 export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
   const [isConfigDefault, setIsConfigDefault] = useState<boolean>(false);
 
-  const handleDefaultConfigsFile = (
+  const handleDefaultConfigsFile = async (
     checked: boolean,
     propsFormik: FormikProps<JudgeFormSchema>
   ) => {
     setIsConfigDefault(checked);
-    propsFormik.setFieldValue("configsFile", {
-      type: "",
-      name: "",
-    });
+
+    if (checked) {
+      const basePath = window.location.origin;
+      const configs = await axios.get(`${basePath}/api/config-default`);
+      const blob = new Blob([configs.data], { type: "application/json" });
+
+      const file = new File([blob], "configs.json");
+
+      propsFormik.setFieldValue("configsFile", file);
+    }
   };
 
   const handleValidation = (values: any) => {
@@ -83,7 +89,7 @@ export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
                 }}
               />
             </div>
-            <File
+            <FileInput
               id="configsFile"
               label="Configurações"
               accept=".json"
