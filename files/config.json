@@ -5,10 +5,11 @@
       "hasObservation": true,
       "description": "Avaliação da mobilidade e desenvoltura do personagem.",
       "required": true,
-      "maxScore": 10,
+      "maxScore": 5,
       "allowDecimal": true,
       "scoreFieldName": "Nota",
-      "observationFieldName": "Observação"
+      "observationFieldName": "Observação",
+      "keyfilter": "pnum"
     },
     {
       "category": "Fidelidade",
@@ -18,47 +19,50 @@
       "maxScore": 10,
       "allowDecimal": true,
       "scoreFieldName": "Nota",
-      "observationFieldName": "Observação"
+      "observationFieldName": "Observação",
+      "keyfilter": "pnum"
     },
     {
       "category": "Acabamento",
       "hasObservation": true,
       "description": "Avaliação dos detalhes e acabamento geral da caracterização.",
       "required": true,
-      "maxScore": 10,
+      "maxScore": 7,
       "allowDecimal": true,
       "scoreFieldName": "Nota",
-      "observationFieldName": "Observação"
+      "observationFieldName": "Observação",
+      "keyfilter": "pnum"
     },
     {
       "category": "Acessórios (armas/ bolsas/ peruca/ maquiagem)",
       "hasObservation": true,
       "description": "Avaliação dos acessórios, como armas, bolsas, perucas e maquiagem.",
       "required": true,
-      "maxScore": 10,
+      "maxScore": 5,
       "allowDecimal": true,
       "scoreFieldName": "Nota",
-      "observationFieldName": "Observação"
+      "observationFieldName": "Observação",
+      "keyfilter": "pnum"
     },
     {
       "category": "Criatividade / Interpretação",
       "hasObservation": true,
       "description": "Avaliação da criatividade e interpretação única do personagem.",
       "required": true,
-      "maxScore": 10,
+      "maxScore": 3,
       "allowDecimal": true,
       "scoreFieldName": "Nota",
-      "observationFieldName": "Observação"
+      "observationFieldName": "Observação",
+      "keyfilter": "pnum"
     },
     {
       "category": "Imagem referência",
       "hasObservation": false,
       "description": "Imagens usadas como referência, sem observações associadas.",
       "required": true,
-      "maxScore": 10,
-      "allowDecimal": true,
-      "scoreFieldName": "Nota",
-      "observationFieldName": "Observação"
+      "scoreFieldName": "Sim ou Não",
+      "observationFieldName": "Observação",
+      "keyfilter": "alpha"
     }
   ]
 }

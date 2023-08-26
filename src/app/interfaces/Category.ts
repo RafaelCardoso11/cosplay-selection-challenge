@@ -1,3 +1,5 @@
+import { KeyFilterType } from "primereact/keyfilter";
+
 export interface Category {
   category: string;
   hasObservation: boolean;
@@ -7,4 +9,5 @@ export interface Category {
   allowDecimal: boolean;
   scoreFieldName: string;
   observationFieldName: string;
+  keyfilter: KeyFilterType;
 }
