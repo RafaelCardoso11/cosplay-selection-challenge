@@ -1,18 +1,17 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     try {
-      const fileName = "config.json";
-      const filePath = path.join(process.cwd(), "files", fileName);
+      const configsName = "config.json";
+      const configsPath = path.join(process.cwd(), "files", configsName);
 
-      const fileStream = fs.createReadStream(filePath);
-      res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
-      fileStream.pipe(res);
+      const configs = await fs.readFile(configsPath, 'utf-8');
+      res.status(200).json(configs);
     } catch (error) {
-      res.status(500).json({ error: "Erro ao baixar o arquivo." });
+      res.status(500).json({ error });
     }
   } else {
     res.status(405).json({ error: "Método não permitido." });
