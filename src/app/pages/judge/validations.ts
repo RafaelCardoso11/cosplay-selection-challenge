@@ -1,4 +1,4 @@
-import { TypeOf, custom, number, object, string, union } from "zod";
+import { TypeOf, number, object, string, union } from "zod";
 
 
 export const judgeFormSchema = object({
