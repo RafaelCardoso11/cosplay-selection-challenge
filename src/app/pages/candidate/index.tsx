@@ -12,13 +12,17 @@ import {
   initialValues,
 } from "./validations";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
+import { Toast } from "primereact/toast";
 
 interface CandidateProps {
   categories: Category[];
+  handleNextPage: () => void
 }
-export const Candidate: React.FC<CandidateProps> = ({ categories }) => {
+export const Candidate: React.FC<CandidateProps> = ({ categories, handleNextPage }) => {
   const [ratings, setRatings] = useState<{ score: number }[]>([]);
+  const toast = useRef<Toast>(null);
   const formik = useFormik<CandidateFormSchema>({
     initialValues,
     validateOnBlur: false,
@@ -63,6 +67,28 @@ export const Candidate: React.FC<CandidateProps> = ({ categories }) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories]);
+
+
+  const accept = () => {
+    toast.current?.show({ severity: 'info', summary: 'Continuar', detail: 'Continuar Candidaturas', life: 3000 });
+    handleNextPage()
+};
+
+const reject = () => {
+    toast.current?.show({ severity: 'warn', summary: 'Finalizar', detail: 'Finalizar Candidaturas', life: 3000 });
+};
+
+const confirm1 = (event: any) => {
+    confirmPopup({
+        target: event.currentTarget,
+        message: 'Você deseja continuar a candidatura?',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: "Continuar Candidaturas",
+        rejectLabel: "Finalizar Candidaturas",
+        accept,
+        reject
+    });
+};
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -136,12 +162,17 @@ export const Candidate: React.FC<CandidateProps> = ({ categories }) => {
           <FinalRatings ratings={ratings} />
         </div>
 
-        <Button
-          className="w-full justify-center mt-10 bg-blue-700"
-          type="reset"
-        >
-          Confirmar Avaliação
-        </Button>
+        <Toast ref={toast} />
+        <ConfirmPopup />
+        <div className=" flex gap-2 justify-center">
+          <Button
+            className="w-full justify-center mt-10 bg-blue-700"
+            type="reset"
+            onClick={confirm1}
+          >
+            Confirmar Avaliação
+          </Button>
+        </div>
       </div>
     </form>
   );

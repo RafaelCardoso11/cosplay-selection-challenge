@@ -37,6 +37,9 @@ export default function Home() {
     setStep((stepCurrent) => stepCurrent + 1);
     handleReaderConfigs(values.configsFile as File);
   };
+  const handleNext = () => {
+    setStep((stepCurrent) => stepCurrent + 1);
+  };
   const items: MenuItem[] = [
     {
       label: "Jurado",
@@ -49,7 +52,7 @@ export default function Home() {
       label: "Candidato",
       data: {
         title: "Ficha do Candidato",
-        content: configs && <Candidate categories={configs.categories} />,
+        content: configs && <Candidate categories={configs.categories} handleNextPage={handleNext} />,
       },
     },
     {
