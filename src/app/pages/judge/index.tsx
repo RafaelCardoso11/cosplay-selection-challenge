@@ -63,7 +63,6 @@ export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
 
   useEffect(() => {
     handleGenerateFileJsonWithConfigs().then((file) => {
-      console.log(file, "fileee");
       if (file) {
         setFieldValue("configsFile", file);
       }
