@@ -9,10 +9,10 @@ import {
   initialValues,
 } from "./validations";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { Toast } from "primereact/toast";
-import { Questions } from "./components/questions";
+import { Questions } from "./components/questions/questions";
 
 interface CandidateProps {
   categories: Category[];
@@ -23,6 +23,8 @@ export const Candidate: React.FC<CandidateProps> = ({
   handleNextPage,
 }) => {
   const toast = useRef<Toast>(null);
+  const containerConfirmAvaliationRef = useRef<HTMLDivElement>(null);
+  const [resetAvaliation, setResetAvaliation] = useState(false);
 
   const accept = () => {
     toast.current?.show({
@@ -31,7 +33,6 @@ export const Candidate: React.FC<CandidateProps> = ({
       detail: "Continuar Candidaturas",
       life: 3000,
     });
-    handleNextPage();
   };
 
   const reject = () => {
@@ -41,54 +42,57 @@ export const Candidate: React.FC<CandidateProps> = ({
       detail: "Finalizar Candidaturas",
       life: 3000,
     });
-  };
-
-  const confirm1 = async (
-    event: any,
-    formik: FormikProps<CandidateFormSchema>
-  ) => {
-    const hasErrors = await formik.validateForm();
-
-    if (!hasErrors) {
-      confirmPopup({
-        target: event.currentTarget,
-        message: "Você deseja continuar a candidatura?",
-        icon: "pi pi-exclamation-triangle",
-        acceptLabel: "Continuar Candidaturas",
-        rejectLabel: "Finalizar Candidaturas",
-        accept,
-        reject,
-      });
-    }
+    handleNextPage();
   };
 
   return (
     <div>
-      <div className="mb-10 bg-slate-100 p-5 rounded-sm" >
+      <div className="mb-10 bg-slate-100 p-5 rounded-sm">
         <h2 className="text-sm font-semibold">
           Última avaliação:
-          <span className="text-sm font-normal"> {"Rafael, "} {"29/08/23 : 16:35"}</span>
+          <span className="text-sm font-normal">
+            {" "}
+            {"Rafael, "} {"29/08/23 : 16:35"}
+          </span>
         </h2>
-
       </div>
       <Formik<CandidateFormSchema>
         {...{
           initialValues,
           validateOnBlur: false,
           validateOnChange: false,
-
           validationSchema: toFormikValidationSchema(candidateFormSchema),
-          onSubmit: (values) => {
-            alert(JSON.stringify(values));
+          onSubmit: (_, props) => {
+            confirmPopup({
+              target: containerConfirmAvaliationRef.current
+                ? containerConfirmAvaliationRef.current
+                : undefined,
+              message: "Você deseja continuar a candidatura?",
+              icon: "pi pi-exclamation-triangle",
+              acceptLabel: "Continuar Candidaturas",
+              rejectLabel: "Finalizar Candidaturas",
+              accept,
+              onHide: () => {
+                setResetAvaliation(true);
+                props.resetForm();
+              },
+              onShow() {
+                setResetAvaliation(false);
+              },
+              reject,
+            });
           },
           validate(values) {
-            if (!values.ratings.length) {
+            let errors: any = {}
+            if (values.totalRating === initialValues.totalRating) {
+              errors.totalRating = "A Avaliação não foi preenchida."
               toast.current?.show({
                 severity: "error",
                 summary: "Info",
-                detail: "A Avaliação não foi preenchida.",
+                detail: errors.totalRating,
               });
             }
+            return errors
           },
         }}
       >
@@ -103,24 +107,31 @@ export const Candidate: React.FC<CandidateProps> = ({
                 />
                 <Input id="character" label="Personagem" propsFormik={formik} />
               </div>
-              <h2 className="text-2xl font-semibold mb-1">Avaliação</h2>
+              <span className="text-2xl font-semibold mb-1">
+                Avaliação
+                {formik.errors.totalRating && (
+                  <small className="p-error text-sm">*</small>
+                )}
+              </span>
               <p className="mb-7 text-sm break-words">
                 Notas objetivas e observações personalizadas.
               </p>
-              <FieldArray
-                name="ratings"
-                render={(ratings: FieldArrayRenderProps) => (
-                  <Questions categories={categories} ratings={ratings} />
-                )}
+              <Questions
+                categories={categories}
+                formikProps={formik}
+                resetAvaliation={resetAvaliation}
               />
 
               <Toast ref={toast} />
               <ConfirmPopup />
-              <div className=" flex gap-2 justify-center">
+
+              <div
+                className="flex gap-2 justify-center"
+                ref={containerConfirmAvaliationRef}
+              >
                 <Button
                   className="w-full justify-center mt-10 bg-blue-700"
-                  type="reset"
-                  onClick={(e) => confirm1(e, formik)}
+                  type="submit"
                 >
                   Confirmar Avaliação
                 </Button>
