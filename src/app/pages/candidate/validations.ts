@@ -1,4 +1,4 @@
-import { TypeOf, array, object, string } from "zod";
+import { TypeOf, array, number, object, string } from "zod";
 
 export const candidateFormSchema = object({
   candidate: string({
@@ -7,15 +7,9 @@ export const candidateFormSchema = object({
   character: string({
     required_error: "O Personagem é obrigatório.",
   }),
-  ratings: array(
-    object({
-      value: string({
-        required_error: "Obrigatório",
-      }),
-    })
-  ).refine((value) => value.length > 0, {
-    message: 'O array "ratings" é obrigatório e não pode estar vazio',
-  }),
+  totalRating: number({
+    required_error: "Um total rating é obrigatório.",
+  })
 });
 
 export type CandidateFormSchema = TypeOf<typeof candidateFormSchema>;
@@ -23,5 +17,5 @@ export type CandidateFormSchema = TypeOf<typeof candidateFormSchema>;
 export const initialValues: CandidateFormSchema = {
   candidate: "",
   character: "",
-  ratings: [],
+  totalRating:0,
 };
