@@ -70,7 +70,7 @@ export const Candidate: React.FC<CandidateProps> = ({
               message: "Você deseja continuar a candidatura?",
               icon: "pi pi-exclamation-triangle",
               acceptLabel: "Continuar Candidaturas",
-              rejectLabel: "Finalizar Candidaturas",
+              rejectLabel: "Ver ranking",
               accept,
               onHide: () => {
                 setResetAvaliation(true);
