@@ -22,7 +22,7 @@ export const Input: React.FC<InputProps> = ({
         htmlFor={id}
         className="block text-sm font-medium text-gray-700 mb-2"
       >
-        {label} 
+        {label}
         {propsFormik?.errors[id] && (
           <small className="p-error text-sm">*</small>
         )}
@@ -36,9 +36,8 @@ export const Input: React.FC<InputProps> = ({
         className="w-full"
         {...inputTextProps}
       />
-      {!propsFormik?.isSubmitting && (
-        <small className="p-error">{propsFormik?.errors[id] as string}</small>
-      )}
+
+      <small className="p-error">{propsFormik?.errors[id] as string}</small>
     </div>
   );
 };

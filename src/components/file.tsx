@@ -51,9 +51,7 @@ export const File: React.FC<FileProps> = ({
         className="w-full"
         {...inputTextProps}
       />
-      {!propsFormik?.isSubmitting && (
-        <small className="p-error">{propsFormik?.errors[id] as string}</small>
-      )}
+      <small className="p-error">{propsFormik?.errors[id] as string}</small>
     </div>
   );
 };
