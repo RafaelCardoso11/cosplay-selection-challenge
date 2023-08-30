@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { generateArrayFromIndex } from "@/app/helpers/generateArrayFromIndex";
 import { Category } from "@/app/interfaces/Category";
 import { Input } from "@/components/Input";
@@ -56,18 +57,25 @@ export const Questions: React.FC<Props> = ({
           detail: Object.values(errors).join(' - '),
           life: 3000,
         });
-
       }
-      
+
       return errors;
     },
   });
 
   useEffect(() => {
+    if(resetAvaliation){
+      categories.forEach(({ scoreFieldName }, index) => {
+        formik.setFieldValue(scoreFieldName.toLowerCase() + index, "");
+      });
+      formikProps.resetForm()
+    }
+  }, [resetAvaliation])
+
+  useEffect(() => {
     categories.forEach(({ scoreFieldName }, index) => {
       formik.setFieldValue(scoreFieldName.toLowerCase() + index, "");
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories]);
   return (
     <div>
