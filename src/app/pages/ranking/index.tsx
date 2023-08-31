@@ -77,7 +77,11 @@ export const Ranking: React.FC<RankingProps> = ({
         <TreeTable
           tableStyle={{ minWidth: "25rem" }}
           value={dataTable}
+          paginator
+          rows={5}
+          rowsPerPageOptions={[3, 5]}
           className="w-full text-xs"
+          footer={"Total de Avaliações: " + dataTable.length}
         >
           <Column field="ranking" header="Ranking" expander></Column>
           <Column field="name" header="Candidato"></Column>
@@ -85,20 +89,17 @@ export const Ranking: React.FC<RankingProps> = ({
           <Column field="score" header="Nota Final"></Column>
         </TreeTable>
       </div>
-      <div>
+      <div className="flex justify-center space-x-2 mt-10">
         <Button
-          className="w-full justify-center mt-10 bg-blue-700"
-          onClick={handleBackStep}
-        >
-          Voltar para a Avaliação
-        </Button>
-        <Button
-          className="w-full justify-center mt-10 bg-red-700"
+          className=" bg-red-700"
           onClick={() => {
             localStorage.removeItem("avaliations");
           }}
         >
           Resetar Avaliações
+        </Button>
+        <Button className=" bg-blue-700" onClick={handleBackStep}>
+          Voltar para a Avaliação
         </Button>
       </div>
     </div>
