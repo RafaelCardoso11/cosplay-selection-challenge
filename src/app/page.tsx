@@ -13,9 +13,20 @@ interface Configs {
   categories: Category[];
 }
 
+export interface Avaliation {
+  name: string;
+  character: string;
+  totalRating: number;
+}
+
 export default function Home() {
   const [step, setStep] = useState<number>(0);
   const [configs, setConfigs] = useState<Configs>();
+  const [avaliation, setAvaliation] = useState<Avaliation>({
+    character: "",
+    name: "",
+    totalRating: 0,
+  });
 
   const handleReaderConfigs = (configs: File) => {
     const reader = new FileReader();
@@ -40,6 +51,10 @@ export default function Home() {
   const handleNext = () => {
     setStep((stepCurrent) => stepCurrent + 1);
   };
+
+  const handleBackStep = () => {
+    setStep((stepCurrent) => stepCurrent - 1);
+  };
   const items: MenuItem[] = [
     {
       label: "Jurado",
@@ -52,12 +67,23 @@ export default function Home() {
       label: "Candidato",
       data: {
         title: "Ficha do Candidato",
-        content: configs && <Candidate categories={configs.categories} handleNextPage={handleNext} />,
+        content: configs && (
+          <Candidate
+            categories={configs.categories}
+            handleNextPage={handleNext}
+            setAvaliation={setAvaliation}
+          />
+        ),
       },
     },
     {
       label: "Ranking",
-      data: { title: "Ranking dos Candidatos", content: <Ranking /> },
+      data: {
+        title: "Ranking dos Candidatos",
+        content: (
+          <Ranking handleBackStep={handleBackStep} avaliation={avaliation} />
+        ),
+      },
     },
   ];
 
