@@ -72,7 +72,7 @@ export const Ranking: React.FC<RankingProps> = ({
   }, [handleSetAvaliationsToLocalStorage]);
 
   return (
-    <div >
+    <div>
       <div className="card  w-full flex justify-content-center">
         <TreeTable
           tableStyle={{ minWidth: "25rem" }}
@@ -91,6 +91,14 @@ export const Ranking: React.FC<RankingProps> = ({
           onClick={handleBackStep}
         >
           Voltar para a Avaliação
+        </Button>
+        <Button
+          className="w-full justify-center mt-10 bg-red-700"
+          onClick={() => {
+            localStorage.removeItem("avaliations");
+          }}
+        >
+          Resetar Avaliações
         </Button>
       </div>
     </div>
