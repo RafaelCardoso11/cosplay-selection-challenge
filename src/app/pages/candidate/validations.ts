@@ -1,7 +1,7 @@
 import { TypeOf, array, number, object, string } from "zod";
 
 export const candidateFormSchema = object({
-  candidate: string({
+  name: string({
     required_error: "O Nome do Candidato é obrigatório",
   }),
   character: string({
@@ -9,13 +9,15 @@ export const candidateFormSchema = object({
   }),
   totalRating: number({
     required_error: "Um total rating é obrigatório.",
-  })
+  }),
+  fields: array(object({})),
 });
 
 export type CandidateFormSchema = TypeOf<typeof candidateFormSchema>;
 
 export const initialValues: CandidateFormSchema = {
-  candidate: "",
+  name: "",
   character: "",
-  totalRating:0,
+  totalRating: 0,
+  fields: []
 };
