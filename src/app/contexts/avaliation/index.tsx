@@ -15,9 +15,6 @@ export const AvaliationProvider: React.FC<AvaliationProviderProps> = ({
   const [avaliation, setAvaliation] = useState<IAvaliation>(initialValues);
 
 
-  useEffect(() => {
-    console.log(avaliation, "avaliationavaliation")
-  }, [avaliation])
   return (
     <AvaliationContext.Provider
       value={{
