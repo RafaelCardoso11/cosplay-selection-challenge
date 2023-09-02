@@ -13,71 +13,30 @@ import { useRef, useState } from "react";
 import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { Toast } from "primereact/toast";
 import { Questions } from "./components/questions/questions";
-import { Avaliation } from "@/app/page";
+import { useAvaliation } from "@/app/contexts/avaliation/useAvaliation";
 
 interface CandidateProps {
   categories: Category[];
-  handleNextPage: () => void;
-  setAvaliation: React.Dispatch<React.SetStateAction<Avaliation>>
+  handleNextStep: () => void;
 }
 export const Candidate: React.FC<CandidateProps> = ({
   categories,
-  handleNextPage,
-  setAvaliation,
+  handleNextStep,
 }) => {
   const toast = useRef<Toast>(null);
   const containerConfirmAvaliationRef = useRef<HTMLDivElement>(null);
   const [resetAvaliation, setResetAvaliation] = useState(false);
 
-  const accept = () => {
-    toast.current?.show({
-      severity: "info",
-      summary: "Continuar",
-      detail: "Continuar Candidaturas",
-      life: 3000,
-    });
-  };
-
-  const reject = () => {
-    toast.current?.show({
-      severity: "warn",
-      summary: "Finalizar",
-      detail: "Finalizar Candidaturas",
-      life: 3000,
-    });
-
-    setAvaliation({
-      name: formik.values.candidate,
-      character: formik.values.character,
-      totalRating: formik.values.totalRating,
-    });
-    handleNextPage();
-  };
+  const { setValues, getLastAvaliation } = useAvaliation();
 
   const formik = useFormik({
     initialValues,
     validateOnBlur: false,
     validateOnChange: false,
     validationSchema: toFormikValidationSchema(candidateFormSchema),
-    onSubmit: (_, props) => {
-      confirmPopup({
-        target: containerConfirmAvaliationRef.current
-          ? containerConfirmAvaliationRef.current
-          : undefined,
-        message: "Você deseja continuar a candidatura?",
-        icon: "pi pi-exclamation-triangle",
-        acceptLabel: "Continuar Candidaturas",
-        rejectLabel: "Ver ranking",
-        accept,
-        onHide: () => {
-          setResetAvaliation(true);
-          props.resetForm();
-        },
-        onShow() {
-          setResetAvaliation(false);
-        },
-        reject,
-      });
+    onSubmit: (data, props) => {
+      setValues({ candidate: data });
+      // handleNextStep()
     },
     validate(values) {
       let errors: any = {};
@@ -93,26 +52,25 @@ export const Candidate: React.FC<CandidateProps> = ({
     },
   });
 
+  const lastAvaliation = getLastAvaliation();
+
   return (
     <div>
-      <div className="mb-10 bg-slate-100 p-5 rounded-sm">
-        <h2 className="text-sm font-semibold">
-          Última avaliação:
-          <span className="text-sm font-normal">
-            {" "}
-            {"Rafael, "} {"29/08/23 : 16:35"}
-          </span>
-        </h2>
-      </div>
+      {lastAvaliation?.candidate.name && (
+        <div className="mb-10 bg-slate-100 p-5 rounded-sm">
+          <h2 className="text-sm font-semibold">
+            Última avaliação:
+            <span className="text-sm font-normal">
+              {lastAvaliation.candidate.name} {"29/08/23 : 16:35"}
+            </span>
+          </h2>
+        </div>
+      )}
 
       <form onSubmit={formik.handleSubmit}>
         <div>
           <div className="space-y-5 mb-6">
-            <Input
-              id="candidate"
-              label="Nome do Candidato"
-              propsFormik={formik}
-            />
+            <Input id="name" label="Nome do Candidato" propsFormik={formik} />
             <Input id="character" label="Personagem" propsFormik={formik} />
           </div>
           <span className="text-2xl font-semibold mb-1">
