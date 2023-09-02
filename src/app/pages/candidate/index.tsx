@@ -3,10 +3,7 @@ import { Input } from "@/components/Input";
 import { Category } from "../../interfaces/Category";
 import { Button } from "primereact/button";
 import { Formik, useFormik } from "formik";
-import {
-  candidateFormSchema,
-  initialValues,
-} from "./validations";
+import { candidateFormSchema, initialValues } from "./validations";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { useRef, useState } from "react";
 import { Toast } from "primereact/toast";
@@ -14,11 +11,10 @@ import { Questions } from "./components/questions/questions";
 import { useAvaliation } from "@/app/contexts/avaliation/useAvaliation";
 import { Modal } from "@/components/modal";
 
-
 function scrollToTop() {
   window.scrollTo({
     top: 0,
-    behavior: "smooth"
+    behavior: "smooth",
   });
 }
 
@@ -78,8 +74,6 @@ export const Candidate: React.FC<CandidateProps> = ({
   };
 
   const handleNewAvaliation = () => {
-
-
     handleSetNewAvaliation();
     toast.current?.show({
       severity: "success",
@@ -88,7 +82,7 @@ export const Candidate: React.FC<CandidateProps> = ({
     });
 
     handleCloseModalConfirmAvaliation();
-    scrollToTop()
+    scrollToTop();
   };
 
   const handleEndAvalitions = () => {
@@ -97,11 +91,13 @@ export const Candidate: React.FC<CandidateProps> = ({
     handleNextStep();
   };
 
-  const avaliationCurrentOrLast = avaliation?.candidate.name ? avaliation : lastAvaliation
+  const avaliationCurrentOrLast = avaliation?.candidate.name
+    ? avaliation
+    : lastAvaliation;
 
   return (
     <div>
-      {(avaliationCurrentOrLast) && (
+      {avaliationCurrentOrLast && (
         <div className="mb-10 bg-slate-100 p-5 rounded-sm">
           <h2 className="text-sm font-semibold">
             Última avaliação:
@@ -142,21 +138,21 @@ export const Candidate: React.FC<CandidateProps> = ({
             visible={openModalConfirmAvaliation}
           >
             <Button
-             severity="info" 
+              severity="info"
               className="justify-center"
               onClick={handleCloseModalConfirmAvaliation}
             >
               Voltar
             </Button>
             <Button
-              severity="warning" 
+              severity="warning"
               className="justify-center"
               onClick={handleNewAvaliation}
             >
               Nova avaliação
             </Button>
             <Button
-              severity="danger" 
+              severity="danger"
               className="col-span-2 w-full justify-center"
               onClick={handleEndAvalitions}
             >
