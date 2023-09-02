@@ -142,19 +142,21 @@ export const Candidate: React.FC<CandidateProps> = ({
             visible={openModalConfirmAvaliation}
           >
             <Button
-              className="bg-blue-600 justify-center"
+             severity="info" 
+              className="justify-center"
               onClick={handleCloseModalConfirmAvaliation}
             >
               Voltar
             </Button>
             <Button
-            
-              className=" justify-center"
+              severity="warning" 
+              className="justify-center"
               onClick={handleNewAvaliation}
             >
               Nova avaliação
             </Button>
             <Button
+              severity="danger" 
               className="col-span-2 w-full justify-center"
               onClick={handleEndAvalitions}
             >
