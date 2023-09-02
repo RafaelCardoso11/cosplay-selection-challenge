@@ -27,6 +27,7 @@ export default function Home() {
   const items: MenuItem[] = [
     {
       label: "Jurado",
+      disabled: true,
       data: {
         title: "Ficha do Jurado",
         content: (
@@ -36,8 +37,10 @@ export default function Home() {
     },
     {
       label: "Candidato",
+      disabled: true,
       data: {
         title: "Ficha do Candidato",
+
         content: configs && (
           <Candidate
             categories={configs.categories}
@@ -48,6 +51,7 @@ export default function Home() {
     },
     {
       label: "Ranking",
+      disabled: !configs,
       data: {
         title: "Ranking dos Candidatos",
         content: <Ranking handleBackStep={handleBackStep} />,
@@ -67,6 +71,7 @@ export default function Home() {
           <Steps
             model={items}
             activeIndex={step}
+            readOnly={false}
             onSelect={(e) => setStep(e.index)}
           />
 
