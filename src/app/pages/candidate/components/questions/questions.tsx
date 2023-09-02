@@ -114,7 +114,7 @@ export const Questions: React.FC<Props> = ({
                     inputTextProps={{
                       keyfilter,
                       tooltipOptions: { position: "top" },
-                      tooltip: `A ${scoreFieldName} deve ser de no máximo *${maxScore}*`,
+                      tooltip: maxScore ? `A ${scoreFieldName} deve ser de no máximo *${maxScore}*` : '',
                     }}
                     propsFormik={formik}
                     label={scoreFieldName}
