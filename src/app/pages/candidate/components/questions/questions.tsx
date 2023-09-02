@@ -50,11 +50,11 @@ export const Questions: React.FC<Props> = ({
         }
       );
 
-      if(!isObjectEmpty(errors)){
+      if (!isObjectEmpty(errors)) {
         toast.current?.show({
           severity: "error",
           summary: "Erros encontrados",
-          detail: Object.values(errors).join(' - '),
+          detail: Object.values(errors).join(" - "),
           life: 3000,
         });
       }
@@ -64,13 +64,13 @@ export const Questions: React.FC<Props> = ({
   });
 
   useEffect(() => {
-    if(resetAvaliation){
+    if (resetAvaliation) {
       categories.forEach(({ scoreFieldName }, index) => {
         formik.setFieldValue(scoreFieldName.toLowerCase() + index, "");
       });
-      formikProps.resetForm()
+      formikProps.resetForm();
     }
-  }, [resetAvaliation])
+  }, [resetAvaliation]);
 
   useEffect(() => {
     categories.forEach(({ scoreFieldName }, index) => {
@@ -113,7 +113,8 @@ export const Questions: React.FC<Props> = ({
                     id={scoreFieldName.toLowerCase() + index}
                     inputTextProps={{
                       keyfilter,
-                      tooltip: maxScore?.toString(),
+                      tooltipOptions: { position: "top" },
+                      tooltip: `A ${scoreFieldName} deve ser de no máximo *${maxScore}*`,
                     }}
                     propsFormik={formik}
                     label={scoreFieldName}
