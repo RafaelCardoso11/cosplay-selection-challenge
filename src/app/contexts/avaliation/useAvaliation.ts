@@ -1,6 +1,7 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { AvaliationContext } from "./context";
 import { IAvaliation } from "./interface";
+import { initialValues } from "./initialValues";
 
 const AVALIATIONS_KEY = "avaliations";
 
@@ -10,7 +11,7 @@ export const useAvaliation = () => {
   const getAvaliations = () => {
     const avaliations = localStorage.getItem(AVALIATIONS_KEY);
 
-    return avaliations ? JSON.parse(avaliations) : [];
+    return avaliations ? (JSON.parse(avaliations) as IAvaliation[]) : [];
   };
 
   const getLastAvaliation = () => {
@@ -29,15 +30,38 @@ export const useAvaliation = () => {
   };
 
   const resetAvaliations = () => {
-    return localStorage.removeItem(AVALIATIONS_KEY);
+    localStorage.removeItem(AVALIATIONS_KEY);
+    if (setAvaliation) {
+      setAvaliation(initialValues);
+    }
   };
 
-  const setValues = (avaliation: IAvaliation | {}) => {
+  const setInAvaliations = useCallback(() => {
+    const avaliations = getAvaliations();
+
+    setAvaliations([...avaliations, avaliation]);
+  }, [avaliation]);
+
+
+  const deleteAvaliation = (index: number) => {
+      const avaliations = getAvaliations();
+
+
+      const newAvaliations = avaliations.splice(0, index)
+
+      setAvaliations(newAvaliations)
+  }
+
+  const setValues = (
+    avaliation: IAvaliation | {},
+    setAvaliationInAvaliations?: boolean
+  ) => {
     if (setAvaliation) {
-      setAvaliation((prev: IAvaliation) => ({
-        ...prev,
-        ...avaliation,
-      }));
+      setAvaliation((prev: IAvaliation) => ({ ...prev, ...avaliation }));
+
+      if (setAvaliationInAvaliations) {
+        setInAvaliations();
+      }
     }
   };
 
@@ -47,6 +71,7 @@ export const useAvaliation = () => {
     setAvaliations,
     getAvaliations,
     getLastAvaliation,
+    deleteAvaliation,
     resetAvaliations,
   };
 };
