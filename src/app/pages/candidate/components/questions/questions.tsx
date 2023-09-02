@@ -27,8 +27,17 @@ export const Questions: React.FC<Props> = ({
     initialValues,
     validateOnBlur: false,
     validateOnChange: false,
-    onSubmit: (values) => {
+    onSubmit: (values: any) => {
       formikProps.setFieldValue("totalRating", values.ratings);
+
+      const fields = categories.map(({ category, scoreFieldName, observationFieldName }, index) => {
+        return {
+          category,
+          totalRating: values[scoreFieldName.toLowerCase() + index],
+          value: values[observationFieldName.toLowerCase() + index]
+        };
+      });
+      formikProps.setFieldValue("fields", fields);
     },
     validate: (values: any) => {
       let errors: any = {};
@@ -65,16 +74,18 @@ export const Questions: React.FC<Props> = ({
 
   useEffect(() => {
     if (resetAvaliation) {
-      categories.forEach(({ scoreFieldName }, index) => {
+      categories.forEach(({ scoreFieldName, observationFieldName }, index) => {
         formik.setFieldValue(scoreFieldName.toLowerCase() + index, "");
+        formik.setFieldValue(observationFieldName.toLocaleLowerCase() + index, "");
       });
       formikProps.resetForm();
     }
   }, [resetAvaliation]);
 
   useEffect(() => {
-    categories.forEach(({ scoreFieldName }, index) => {
+    categories.forEach(({ scoreFieldName, observationFieldName }, index) => {
       formik.setFieldValue(scoreFieldName.toLowerCase() + index, "");
+      formik.setFieldValue(observationFieldName.toLocaleLowerCase() + index, "");
     });
   }, [categories]);
   return (
@@ -114,14 +125,16 @@ export const Questions: React.FC<Props> = ({
                     inputTextProps={{
                       keyfilter,
                       tooltipOptions: { position: "top" },
-                      tooltip: maxScore ? `A ${scoreFieldName} deve ser de no máximo *${maxScore}*` : '',
+                      tooltip: maxScore
+                        ? `A ${scoreFieldName} deve ser de no máximo *${maxScore}*`
+                        : "",
                     }}
                     propsFormik={formik}
                     label={scoreFieldName}
                   />
                   {hasObservation && (
                     <Input
-                      id={category + "_obs"}
+                      id={observationFieldName.toLocaleLowerCase() + index}
                       propsFormik={formik}
                       label={observationFieldName}
                     />

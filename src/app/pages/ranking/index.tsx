@@ -17,13 +17,13 @@ interface RankingProps {
 
 interface DataTable {
   key: string;
-
+  isChildren: boolean;
   data: {
     ranking: string;
-    name: string;
-    character: string;
+    name?: string;
+    character?: string;
     totalRating: number;
-    judge: string;
+    judge?: string;
   };
   children?: DataTable[];
 }
@@ -47,6 +47,7 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
       .map((avaliation, index) => {
         const avaliationForDataTable: DataTable = {
           key: index.toString(),
+          isChildren: false,
           data: {
             character: avaliation.candidate.character,
             name: avaliation.candidate.name,
@@ -54,6 +55,19 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
             ranking: `#${index + 1}`,
             judge: avaliation.judge,
           },
+          children: avaliation.candidate.fields.map(
+            ({ category, totalRating, value }, index) => {
+              return {
+                key: index.toString(),
+                isChildren: true,
+                data: {
+                  totalRating: totalRating,
+                  ranking: category,
+                  name: value,
+                },
+              };
+            }
+          ),
         };
 
         return avaliationForDataTable;
@@ -64,6 +78,7 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
   const dataTable: DataTable[] = useMemo(() => {
     const avaliations = getAvaliations();
 
+    console.log(avaliations);
     if (refresh) {
       return handleFormatAvaliationToDataTable(avaliations);
     }
@@ -114,7 +129,8 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
         accept,
       });
     };
-    return (
+    console.log(option);
+    return !option.isChildren ? (
       <div className="flex justify-content-start">
         <Button
           icon="pi pi-trash"
@@ -122,18 +138,23 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
           severity="danger"
         />
       </div>
+    ) : (
+      <></>
     );
   };
+
 
   return (
     <div>
       <div className="card  w-full flex justify-content-center">
         <TreeTable
-          tableStyle={{ minWidth: "40rem" }}
+          tableStyle={{ minWidth: "50rem" }}
+          metaKeySelection={false}
           value={dataTable}
           paginator
           rows={5}
-          // scrollable
+          selectionMode="single"
+
           rowsPerPageOptions={[3, 5]}
           className="w-full text-xs"
           emptyMessage="Nenhuma avaliação"
