@@ -1,21 +1,25 @@
 "use client";
 import { Input } from "@/components/Input";
 import { Button } from "primereact/button";
-import { Formik, FormikProps, useFormik } from "formik";
+import { useFormik } from "formik";
 
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { JudgeFormSchema, judgeFormSchema, initialValues } from "./validations";
-import { File as FileInput } from "@/components/file";
 import { useEffect, useCallback, useRef } from "react";
 import { Toast } from "primereact/toast";
 import axios from "axios";
+import { useAvaliation } from "@/app/contexts/avaliation/useAvaliation";
+import { Configs } from "@/app/page";
 
 interface JudgeProps {
-  handleNextPage: (values: JudgeFormSchema) => void;
+  handleNextStep: () => void;
+  setConfigs: React.Dispatch<React.SetStateAction<Configs | undefined>>;
 }
 
-export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
+export const Judge: React.FC<JudgeProps> = ({ handleNextStep, setConfigs }) => {
   const toast = useRef<Toast>(null);
+
+  const { setValues } = useAvaliation();
 
   const handleValidation = (values: any) => {
     const errors: any = {};
@@ -31,9 +35,30 @@ export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
 
     return errors;
   };
+
+  const handleReaderConfigs = (configs: File) => {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      try {
+        const jsonData = JSON.parse(content);
+        setConfigs(jsonData);
+      } catch (error) {
+        console.error("Erro ao analisar o arquivo JSON:", error);
+      }
+    };
+
+    reader.readAsText(configs);
+  };
+
   const propsFormik = useFormik<JudgeFormSchema>({
     initialValues,
-    onSubmit: handleNextPage,
+    onSubmit: ({ judge, configsFile }) => {
+      setValues({ judge });
+      handleReaderConfigs(configsFile as File);
+      handleNextStep();
+    },
     validationSchema: toFormikValidationSchema(judgeFormSchema),
     validateOnBlur: false,
     validateOnChange: false,
@@ -97,7 +122,7 @@ export const Judge: React.FC<JudgeProps> = ({ handleNextPage }) => {
         </div>
 
         <Button
-          className="w-full justify-center mt-5 bg-blue-600" 
+          className="w-full justify-center mt-5 bg-blue-600"
           type="submit"
           onClick={() => {
             propsFormik.submitForm();
