@@ -3,7 +3,7 @@ import { Input } from "@/components/Input";
 import { FormikProps } from "formik";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { MouseEvent, useEffect, useRef, useState } from "react";
+import { MouseEvent, useRef } from "react";
 import { initialValues } from "./validations";
 import { isObjectEmpty } from "@/app/helpers/isObjectEmpty";
 
@@ -14,8 +14,6 @@ interface IRating {
 interface FinalRatingProps {
   formikProps: FormikProps<typeof initialValues>;
 }
-
-
 
 function isStringNumber(str: string) {
   return !isNaN(Number(str));
@@ -65,6 +63,7 @@ export const FinalRatings: React.FC<FinalRatingProps> = ({ formikProps }) => {
           Calcular Nota Final
         </Button>
       </div>
+
       <Input
         id="notaFinal"
         label="Nota Final"
