@@ -36,31 +36,25 @@ export const useAvaliation = () => {
     }
   };
 
-  const setInAvaliations = useCallback(() => {
+  const deleteAvaliation = (index: number) => {
     const avaliations = getAvaliations();
 
-    setAvaliations([...avaliations, avaliation]);
-  }, [avaliation]);
+    const newAvaliations = avaliations.splice(0, index);
 
-
-  const deleteAvaliation = (index: number) => {
-      const avaliations = getAvaliations();
-
-
-      const newAvaliations = avaliations.splice(0, index)
-
-      setAvaliations(newAvaliations)
-  }
+    setAvaliations(newAvaliations);
+  };
 
   const setValues = (
-    avaliation: IAvaliation | {},
+    avaliation: IAvaliation | any,
     setAvaliationInAvaliations?: boolean
   ) => {
     if (setAvaliation) {
       setAvaliation((prev: IAvaliation) => ({ ...prev, ...avaliation }));
 
-      if (setAvaliationInAvaliations) {
-        setInAvaliations();
+      if (setAvaliationInAvaliations && avaliation) {
+        const avaliations = getAvaliations();
+
+        setAvaliations([...avaliations, avaliation]);
       }
     }
   };
