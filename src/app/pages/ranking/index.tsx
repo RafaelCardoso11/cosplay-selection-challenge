@@ -29,7 +29,8 @@ interface DataTable {
 
 export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
   const toast = useRef<Toast>(null);
-  const { getAvaliations, resetAvaliations } = useAvaliation();
+  const { getAvaliations, resetAvaliations, deleteAvaliation } =
+    useAvaliation();
 
   const [openModalResetAvaliations, setOpenModalResetAvaliations] =
     useState(false);
@@ -76,41 +77,63 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
     });
 
     resetAvaliations();
-    handleBackStep()
-    
+    handleBackStep();
+  };
+
+  const statusItemTemplate = (option: DataTable) => {
+    return (
+      <div className="flex justify-content-start">
+        <Button
+          icon="pi pi-trash"
+          onClick={() => {
+            deleteAvaliation(Number(option.key))
+
+            toast.current?.show({
+              severity: "success",
+              summary: "Deletado",
+              detail: "A Avaliação foi deletada com Sucesso.",
+            });
+
+            getAvaliations()
+          }}
+          severity="danger"
+        />
+      </div>
+    );
   };
 
   return (
     <div>
       <div className="card  w-full flex justify-content-center">
         <TreeTable
-          tableStyle={{ minWidth: "30rem" }}
+          tableStyle={{ minWidth: "40rem" }}
           value={dataTable}
           paginator
           rows={5}
+          // scrollable
           rowsPerPageOptions={[3, 5]}
           className="w-full text-xs"
           emptyMessage="Nenhuma avaliação"
           footer={"Total de Avaliações: " + dataTable.length}
         >
-         
           <Column field="ranking" header="Ranking" expander></Column>
           <Column field="totalRating" header="Nota Final"></Column>
           <Column field="name" header="Candidato"></Column>
           <Column field="character" header="Personagem"></Column>
           <Column field="judge" header="Jurado"></Column>
+          <Column body={statusItemTemplate} header="Ações" />
         </TreeTable>
       </div>
       <div className="flex justify-center space-x-2 mt-10">
         <Button
-          className=" bg-red-700"
+          severity="danger"
           onClick={() => {
             setOpenModalResetAvaliations(true);
           }}
         >
           Resetar Avaliações
         </Button>
-        <Button className=" bg-blue-700" onClick={handleBackStep}>
+        <Button   severity="info" onClick={handleBackStep}>
           Voltar para a Avaliação
         </Button>
         <Modal
@@ -121,13 +144,15 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
           visible={openModalResetAvaliations}
         >
           <Button
-            className="bg-blue-500 justify-center"
+            className="justify-center"
+            severity="secondary"
             onClick={handleCloseModalResetAvaliations}
           >
             Cancelar
           </Button>
           <Button
-            className="bg-red-600 justify-center"
+            className="justify-center"
+            severity="danger"
             onClick={handleResetAvaliations}
           >
             Confirmar
