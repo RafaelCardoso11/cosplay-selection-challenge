@@ -3,12 +3,11 @@ import { Tree } from "primereact/tree";
 import { PrimeIcons } from "primereact/api";
 import { TreeTable } from "primereact/treetable";
 import { Column } from "primereact/column";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Avaliation } from "@/app/page";
+import { useCallback, useMemo } from "react";
 import { Button } from "primereact/button";
+import { useAvaliation } from "@/app/contexts/avaliation/useAvaliation";
 
 interface RankingProps {
-  avaliation: Avaliation;
   handleBackStep: () => void;
 }
 
@@ -24,18 +23,17 @@ interface DataTable {
   children?: DataTable[];
 }
 
-export const Ranking: React.FC<RankingProps> = ({
-  avaliation,
-  handleBackStep,
-}) => {
+export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
+  const { avaliation } = useAvaliation();
+
   const handleSetAvaliationsToLocalStorage = useCallback(
     (avaliations: DataTable[]) => {
       const avaliationForDataTable: DataTable = {
         key: "",
         data: {
-          character: avaliation.character,
-          name: avaliation.name,
-          score: avaliation.totalRating,
+          character: avaliation.candidate.character,
+          name: avaliation.candidate.name,
+          score: avaliation.candidate.totalRating,
           ranking: "",
         },
       };
