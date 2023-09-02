@@ -124,7 +124,7 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
         header: "Deletar Avaliação",
         icon: "pi pi-info-circle",
         acceptClassName: "p-button-danger",
-        style: {    width: "80%"},
+        style: {    width: "80vw", maxWidth: '30rem'},
         acceptLabel: "SIM",
         rejectLabel: "NÃO",
         accept,
