@@ -9,6 +9,7 @@ import { useAvaliation } from "@/app/contexts/avaliation/useAvaliation";
 import { IAvaliation } from "@/app/contexts/avaliation/interface";
 import { Modal } from "@/components/modal";
 import { Toast } from "primereact/toast";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 interface RankingProps {
   handleBackStep: () => void;
@@ -34,6 +35,8 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
 
   const [openModalResetAvaliations, setOpenModalResetAvaliations] =
     useState(false);
+
+  const [refresh, setRefresh] = useState(true);
 
   const handleFormatAvaliationToDataTable = (avaliations: IAvaliation[]) => {
     const dataTable = avaliations
@@ -61,8 +64,12 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
   const dataTable: DataTable[] = useMemo(() => {
     const avaliations = getAvaliations();
 
-    return handleFormatAvaliationToDataTable(avaliations);
-  }, [getAvaliations]);
+    if (refresh) {
+      return handleFormatAvaliationToDataTable(avaliations);
+    }
+    setRefresh(true);
+    return [];
+  }, [getAvaliations, refresh]);
 
   const handleCloseModalResetAvaliations = () => {
     setOpenModalResetAvaliations(false);
@@ -80,22 +87,38 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
     handleBackStep();
   };
 
-  const statusItemTemplate = (option: DataTable) => {
+  const handleRefresh = () => {
+    setRefresh((refresh) => !refresh);
+  };
+
+  const AvaliationDeleteActionTemplate = (option: DataTable) => {
+    const accept = () => {
+      deleteAvaliation(Number(option.key));
+
+      toast.current?.show({
+        severity: "success",
+        summary: "Deletado",
+        detail: "A Avaliação foi deletada com Sucesso.",
+      });
+      handleRefresh();
+    };
+
+    const openDialogConfirm = () => {
+      confirmDialog({
+        message: "Você realmente deseja deletar essa avaliação?",
+        header: "Deletar Avaliação",
+        icon: "pi pi-info-circle",
+        acceptClassName: "p-button-danger",
+        acceptLabel: "SIM",
+        rejectLabel: "NÃO",
+        accept,
+      });
+    };
     return (
       <div className="flex justify-content-start">
         <Button
           icon="pi pi-trash"
-          onClick={() => {
-            deleteAvaliation(Number(option.key))
-
-            toast.current?.show({
-              severity: "success",
-              summary: "Deletado",
-              detail: "A Avaliação foi deletada com Sucesso.",
-            });
-
-            getAvaliations()
-          }}
+          onClick={openDialogConfirm}
           severity="danger"
         />
       </div>
@@ -121,7 +144,7 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
           <Column field="name" header="Candidato"></Column>
           <Column field="character" header="Personagem"></Column>
           <Column field="judge" header="Jurado"></Column>
-          <Column body={statusItemTemplate} header="Ações" />
+          <Column body={AvaliationDeleteActionTemplate} header="Ações" />
         </TreeTable>
       </div>
       <div className="flex justify-center space-x-2 mt-10">
@@ -133,7 +156,7 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
         >
           Resetar Avaliações
         </Button>
-        <Button   severity="info" onClick={handleBackStep}>
+        <Button severity="info" onClick={handleBackStep}>
           Voltar para a Avaliação
         </Button>
         <Modal
@@ -160,6 +183,7 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
         </Modal>
       </div>
       <Toast ref={toast} />
+      <ConfirmDialog />
     </div>
   );
 };
