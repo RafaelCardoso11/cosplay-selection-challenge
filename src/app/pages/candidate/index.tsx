@@ -4,16 +4,23 @@ import { Category } from "../../interfaces/Category";
 import { Button } from "primereact/button";
 import { Formik, useFormik } from "formik";
 import {
-  CandidateFormSchema,
   candidateFormSchema,
   initialValues,
 } from "./validations";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { useRef, useState } from "react";
-import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { Toast } from "primereact/toast";
 import { Questions } from "./components/questions/questions";
 import { useAvaliation } from "@/app/contexts/avaliation/useAvaliation";
+import { Modal } from "@/components/modal";
+
+
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
 
 interface CandidateProps {
   categories: Category[];
@@ -26,18 +33,28 @@ export const Candidate: React.FC<CandidateProps> = ({
   const toast = useRef<Toast>(null);
   const containerConfirmAvaliationRef = useRef<HTMLDivElement>(null);
   const [resetAvaliation, setResetAvaliation] = useState(false);
+  const [openModalConfirmAvaliation, setOpenModalConfirmAvaliation] =
+    useState(false);
 
-  const { setValues, getLastAvaliation } = useAvaliation();
+  const { setValues, getLastAvaliation, avaliation, setAvaliations } =
+    useAvaliation();
+
+  const lastAvaliation = getLastAvaliation();
+
+  const handleCloseModalConfirmAvaliation = () => {
+    setOpenModalConfirmAvaliation(false);
+  };
+
+  const handleOpenModalConfirmAvaliation = () => {
+    setOpenModalConfirmAvaliation(true);
+  };
 
   const formik = useFormik({
     initialValues,
     validateOnBlur: false,
     validateOnChange: false,
     validationSchema: toFormikValidationSchema(candidateFormSchema),
-    onSubmit: (data, props) => {
-      setValues({ candidate: data });
-      // handleNextStep()
-    },
+    onSubmit: handleOpenModalConfirmAvaliation,
     validate(values) {
       let errors: any = {};
       if (values.totalRating === initialValues.totalRating) {
@@ -52,16 +69,44 @@ export const Candidate: React.FC<CandidateProps> = ({
     },
   });
 
-  const lastAvaliation = getLastAvaliation();
+  const handleSetNewAvaliation = () => {
+    setResetAvaliation(true);
+
+    const avaliation = formik.values;
+
+    setValues({ candidate: avaliation }, true);
+  };
+
+  const handleNewAvaliation = () => {
+
+
+    handleSetNewAvaliation();
+    toast.current?.show({
+      severity: "success",
+      summary: "Candidatura Cadastrada!",
+      detail: "Você está pronto para uma nova candidatura.",
+    });
+
+    handleCloseModalConfirmAvaliation();
+    scrollToTop()
+  };
+
+  const handleEndAvalitions = () => {
+    handleSetNewAvaliation();
+
+    handleNextStep();
+  };
+
+  const avaliationCurrentOrLast = avaliation?.candidate.name ? avaliation : lastAvaliation
 
   return (
     <div>
-      {lastAvaliation?.candidate.name && (
+      {(avaliationCurrentOrLast) && (
         <div className="mb-10 bg-slate-100 p-5 rounded-sm">
           <h2 className="text-sm font-semibold">
             Última avaliação:
             <span className="text-sm font-normal">
-              {lastAvaliation.candidate.name} {"29/08/23 : 16:35"}
+              {` ${avaliationCurrentOrLast.candidate.character} - ${avaliationCurrentOrLast.candidate.name}`}
             </span>
           </h2>
         </div>
@@ -89,7 +134,33 @@ export const Candidate: React.FC<CandidateProps> = ({
           />
 
           <Toast ref={toast} />
-          <ConfirmPopup />
+          <Modal
+            title="Confirmar Avaliação"
+            description="Sua avaliação somente será confirmada ao clicar em 'Nova avaliação' ou 'Finalizar Avaliações'"
+            setVisible={setOpenModalConfirmAvaliation}
+            className="grid grid-cols-2 gap-4 justify-center"
+            visible={openModalConfirmAvaliation}
+          >
+            <Button
+              className="bg-blue-600 justify-center"
+              onClick={handleCloseModalConfirmAvaliation}
+            >
+              Voltar
+            </Button>
+            <Button
+            
+              className=" justify-center"
+              onClick={handleNewAvaliation}
+            >
+              Nova avaliação
+            </Button>
+            <Button
+              className="col-span-2 w-full justify-center"
+              onClick={handleEndAvalitions}
+            >
+              Finalizar Avaliações
+            </Button>
+          </Modal>
 
           <div
             className="flex gap-2 justify-center"
