@@ -127,6 +127,7 @@ export const Candidate: React.FC<CandidateProps> = ({
             categories={categories}
             formikProps={formik}
             resetAvaliation={resetAvaliation}
+            setResetAvaliation={setResetAvaliation}
           />
 
           <Toast ref={toast} />

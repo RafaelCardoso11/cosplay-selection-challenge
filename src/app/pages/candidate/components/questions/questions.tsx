@@ -5,7 +5,7 @@ import { Input } from "@/components/Input";
 import { FinalRatings } from "./finalRatings";
 import { FieldArrayRenderProps, FormikProps, useFormik } from "formik";
 import { Accordion, AccordionTab } from "primereact/accordion";
-import { useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { CandidateFormSchema } from "../../validations";
 import { initialValues } from "./validations";
 import { Toast } from "primereact/toast";
@@ -15,12 +15,14 @@ interface Props {
   categories: Category[];
   formikProps: FormikProps<CandidateFormSchema>;
   resetAvaliation: boolean;
+  setResetAvaliation: Dispatch<SetStateAction<boolean>>;
 }
 
 export const Questions: React.FC<Props> = ({
   categories,
   formikProps,
   resetAvaliation,
+  setResetAvaliation,
 }) => {
   const toast = useRef<Toast>(null);
   const formik = useFormik({
@@ -30,13 +32,15 @@ export const Questions: React.FC<Props> = ({
     onSubmit: (values: any) => {
       formikProps.setFieldValue("totalRating", values.ratings);
 
-      const fields = categories.map(({ category, scoreFieldName, observationFieldName }, index) => {
-        return {
-          category,
-          totalRating: values[scoreFieldName.toLowerCase() + index],
-          value: values[observationFieldName.toLowerCase() + index]
-        };
-      });
+      const fields = categories.map(
+        ({ category, scoreFieldName, observationFieldName }, index) => {
+          return {
+            category,
+            totalRating: values[scoreFieldName.toLowerCase() + index],
+            value: values[observationFieldName.toLowerCase() + index],
+          };
+        }
+      );
       formikProps.setFieldValue("fields", fields);
     },
     validate: (values: any) => {
@@ -76,16 +80,23 @@ export const Questions: React.FC<Props> = ({
     if (resetAvaliation) {
       categories.forEach(({ scoreFieldName, observationFieldName }, index) => {
         formik.setFieldValue(scoreFieldName.toLowerCase() + index, "");
-        formik.setFieldValue(observationFieldName.toLocaleLowerCase() + index, "");
+        formik.setFieldValue(
+          observationFieldName.toLocaleLowerCase() + index,
+          ""
+        );
       });
       formikProps.resetForm();
+      setResetAvaliation(false);
     }
   }, [resetAvaliation]);
 
   useEffect(() => {
     categories.forEach(({ scoreFieldName, observationFieldName }, index) => {
       formik.setFieldValue(scoreFieldName.toLowerCase() + index, "");
-      formik.setFieldValue(observationFieldName.toLocaleLowerCase() + index, "");
+      formik.setFieldValue(
+        observationFieldName.toLocaleLowerCase() + index,
+        ""
+      );
     });
   }, [categories]);
   return (
@@ -119,15 +130,21 @@ export const Questions: React.FC<Props> = ({
             >
               <div>
                 <h2 className="text-1xl w-full  mb-4">{description}</h2>
+                <h2 className="text-sm w-full  mb-4">
+                  {maxScore && (
+                    <strong>
+                      A {scoreFieldName} deve ser de no máximo: {maxScore}
+                    </strong>
+                  )}
+                </h2>
+
                 <div className="space-y-5">
                   <Input
                     id={scoreFieldName.toLowerCase() + index}
                     inputTextProps={{
+                      ...(keyfilter === "pnum" && { type: "number" }),
                       keyfilter,
                       tooltipOptions: { position: "top" },
-                      tooltip: maxScore
-                        ? `A ${scoreFieldName} deve ser de no máximo *${maxScore}*`
-                        : "",
                     }}
                     propsFormik={formik}
                     label={scoreFieldName}
