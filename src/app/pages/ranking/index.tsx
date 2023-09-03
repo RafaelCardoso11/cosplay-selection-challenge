@@ -124,13 +124,13 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
         header: "Deletar Avaliação",
         icon: "pi pi-info-circle",
         acceptClassName: "p-button-danger",
-        style: {    width: "80vw", maxWidth: '30rem'},
+        style: { width: "80vw", maxWidth: "30rem" },
         acceptLabel: "SIM",
         rejectLabel: "NÃO",
         accept,
       });
     };
-    console.log(option);
+
     return !option.isChildren ? (
       <div className="flex justify-content-start">
         <Button
@@ -144,7 +144,6 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
     );
   };
 
-
   return (
     <div>
       <div className="card  w-full flex justify-content-center">
@@ -155,7 +154,6 @@ export const Ranking: React.FC<RankingProps> = ({ handleBackStep }) => {
           paginator
           rows={5}
           selectionMode="single"
-
           rowsPerPageOptions={[3, 5]}
           className="w-full text-xs"
           emptyMessage="Nenhuma avaliação"
