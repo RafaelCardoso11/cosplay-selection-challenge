@@ -39,9 +39,9 @@ export const useAvaliation = () => {
   const deleteAvaliation = (index: number) => {
     const avaliations = getAvaliations();
 
-    const newAvaliations = avaliations.splice(0, index);
+    avaliations.splice(index, 1);
 
-    setAvaliations(newAvaliations);
+    setAvaliations(avaliations);
   };
 
   const setValues = (
